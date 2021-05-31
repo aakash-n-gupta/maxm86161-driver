@@ -1,7 +1,7 @@
 /* Driver code for MAXM86161
 Using Cortex M4 as the development platform
 */
-
+#include "tiva_i2c.c"
 // Register addresses for the MAXM86181
 #define SYSTEM_CONTROL_R 0X0D;
 #define PPG_SYNC_CTRL_R 0X10;
@@ -50,7 +50,22 @@ Required methods
 void init_config()
 {
     // can be configured for spO2, HRM or both simultaneously
-    // green LED - Heartrate, red and IR LED - spO2
+    // green LED1 - Heartrate, red(LED2) and IR LED3 - spO2
+
+    // config for spO2 measurement
+
+    // LED sequence control
+    i2c0_send_data(0x32, LED_SEQUENCE_R1); // ledc1 = 0x02, ledc2 = 0x03
+    i2c0_send_data(0x09, LED_SEQUENCE_R2); // ledc1 = 0x02, ledc2 = 0x03
+    i2c0_send_data(0x00, LED_SEQUENCE_R3); // ledc1 = 0x02, ledc2 = 0x03
+
+    // PPG configuration
+    i2c0_send_data(0x05, PPG_CONFIG_1);
+    i2c0_send_data(0x05, PPG_CONFIG_2);
+
+    // LED pulse amplitude
+    i2c0_send_data(0xFE, LED2_PA); // Arbitary value selected form table @pg 55
+    i2c0_send_data(0xFE, LED3_PA); // Arbitary value selected form table @pg 55
 }
 
 void config_LEDC()
