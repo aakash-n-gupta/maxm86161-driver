@@ -1,7 +1,7 @@
 #include "../TexasInstruments/tm4c123gh6pm.h"
 
 void init_i2c_master();
-
+void set_slave_addr(int, int);
 // USing default I2C0 config on Port B - PB2 is clk, PB3 is data
 void init_i2c_master()
 {
@@ -27,4 +27,34 @@ void init_i2c_master()
     TPR = 9
     */
     I2C0_MTPR_R = 0x09;
+}
+
+// sets the slave adderss in the i2c_Master slacae adderss, along with read write bit
+void set_slave_addr(int address, int RW)
+{
+    // adderss is 7 bits, 8th bit is the R/W bit
+    // bit shifting and updating the address with R/W bit
+    address = address << 1 + RW;
+}
+
+void i2c0_send_data(int data, int slave_addr_r)
+{
+    // 6th bit is busbusy, 0 means idle
+
+    // for MAXM86161, 3 bytes of data must be transmitted, slave_addr,
+    // slave_arre_reg - where the data will be written to in the IC and the data itself
+    while ((I2C0_MCS_R & 0x00000040) == 0)
+    {
+        // first slave address reg is transmitted
+        I2C0_MDR_R = slave_addr_r;
+
+        // after this, data is transmitted
+        I2C0_MDR_R = data;
+    }
+
+    // maybe some offset is needed to write data to specific location to the slave device??
+}
+
+int i2c0_recieve_data(int slave_addr)
+{
 }

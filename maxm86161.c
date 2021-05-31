@@ -1,6 +1,33 @@
 /* Driver code for MAXM86161
 Using Cortex M4 as the development platform
+*/
 
+// Register addresses for the MAXM86181
+#define SYSTEM_CONTROL_R 0X0D;
+#define PPG_SYNC_CTRL_R 0X10;
+#define FIFO_WRITE_PTR 0X04
+#define FIFO_READ_PTR 0X05
+#define OVFLOW_COUNTER 0X06
+#define FIFO_DATA_COUNTER 0X07
+#define FIFO_DATA_REGISTER 0X08
+
+#define FIFO_CONFIG_1 0X09
+#define FIFO_CONFIG_2 0X0A
+#define PPG_CONFIG_1 0X11
+#define PPG_CONFIG_2 0X12
+#define PPG_CONFIG_3 0X13
+
+#define LED_SEQUENCE_R1 0X20
+#define LED_SEQUENCE_R2 0X21
+#define LED_SEQUENCE_R3 0X22
+#define LED1_PA 0X23
+#define LED2_PA 0X24
+#define LED3_PA 0X25
+#define LED_PILOT_PA 0X29
+
+#define DAC_CALIBRATION_ENA 0X50
+
+/*
 Config requires I2C bus, for read write to internal FIFO
 
 Psudocodes given
@@ -16,22 +43,19 @@ Required methods
 2.) init_read_mode()
 3.) init_write_mode()
 4.) LED_config_modes() - something like that
-
 */
-void calibrate();
 
-int main(void)
+// somehow need to transmit these config functions to the sensor, before operation
+
+void init_config()
 {
+    // can be configured for spO2, HRM or both simultaneously
+    // green LED - Heartrate, red and IR LED - spO2
 }
 
-/* 1) Write 0x00 to the following register addresses: 0x02, 0x03, 0x0D, 0x10, 0x12, 0x13, 0x20.
-2) Set the PPG1_ADC_RGE and PPG_TINT bit fields in the PPG_Configuration1 register 0x11 to the values required for the intended application.
-3) Set the START_CAL bit to one on the DAC Calibra-tion Enable register 0x50.
-4) Wait for 200ms for the self-calibration procedure to complete.
-5) Monitor the CAL_DAC_Complete bit in the DAC Calibration Enable register to go high, indicating the calibration procedure is complete.
-6) Check the CAL_DAC1_OOR and bits in the DAC Calibration Enable register to verify that self-calibration has completed successfully.
-7) Configure the registers 0x02, 0x03, 0x0D, 0x10, 0x12, and 0x13 in any order for the application intended.
-8) Finally, write register 0x20 to start the MAXM86161 measurement sequence */
-void calibrate()
+void config_LEDC()
 {
+
+    // some interrupt which indicates if FIFO buffer is full or about to get full
+    //
 }
